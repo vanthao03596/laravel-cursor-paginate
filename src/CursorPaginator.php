@@ -4,12 +4,12 @@ namespace Vanthao03596\LaravelCursorPaginate;
 
 use ArrayAccess;
 use Countable;
-use Vanthao03596\LaravelCursorPaginate\CursorPaginatorContract as PaginatorContract;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use IteratorAggregate;
 use JsonSerializable;
+use Vanthao03596\LaravelCursorPaginate\CursorPaginatorContract as PaginatorContract;
 
 class CursorPaginator extends AbstractCursorPaginator implements Arrayable, ArrayAccess, Countable, IteratorAggregate, Jsonable, JsonSerializable, PaginatorContract
 {

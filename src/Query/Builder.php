@@ -1,6 +1,7 @@
 <?php
 
 namespace Vanthao03596\LaravelCursorPaginate\Query;
+
 use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as Base;
 use Illuminate\Pagination\Paginator;
@@ -90,7 +91,10 @@ class Builder extends Base
     protected function cursorPaginator($items, $perPage, $cursor, $options)
     {
         return Container::getInstance()->makeWith(CursorPaginator::class, compact(
-            'items', 'perPage', 'cursor', 'options'
+            'items',
+            'perPage',
+            'cursor',
+            'options'
         ));
     }
 }

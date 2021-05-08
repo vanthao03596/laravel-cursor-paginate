@@ -38,7 +38,6 @@ class EloquentCursorPaginateMixin
                 'parameters' => $parameters,
             ]);
         };
-
     }
 
     protected function ensureOrderForCursorPagination()
@@ -70,7 +69,10 @@ class EloquentCursorPaginateMixin
     {
         return function ($items, $perPage, $cursor, $options) {
             return Container::getInstance()->makeWith(CursorPaginator::class, compact(
-                'items', 'perPage', 'cursor', 'options'
+                'items',
+                'perPage',
+                'cursor',
+                'options'
             ));
         };
     }

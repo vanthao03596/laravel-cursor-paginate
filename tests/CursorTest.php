@@ -3,8 +3,8 @@
 namespace Vanthao03596\LaravelCursorPaginate\Tests;
 
 use Carbon\Carbon;
-use Vanthao03596\LaravelCursorPaginate\Cursor;
 use PHPUnit\Framework\TestCase;
+use Vanthao03596\LaravelCursorPaginate\Cursor;
 
 class CursorTest extends TestCase
 {

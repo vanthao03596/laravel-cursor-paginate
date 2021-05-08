@@ -2,14 +2,15 @@
 
 
 namespace Vanthao03596\LaravelCursorPaginate\Tests;
+
+use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Query\Grammars\Grammar;
+use Illuminate\Database\Query\Processors\Processor;
 use Illuminate\Pagination\Paginator;
+use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Vanthao03596\LaravelCursorPaginate\Cursor;
 use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
-use Mockery as m;
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\Query\Processors\Processor;
-use Illuminate\Database\Query\Grammars\Grammar;
 use Vanthao03596\LaravelCursorPaginate\Query\Builder;
 
 class DatabaseQueryBuilderTest extends TestCase

@@ -2,10 +2,10 @@
 
 namespace Vanthao03596\LaravelCursorPaginate;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Vanthao03596\LaravelCursorPaginate\Connectors\ConnectionFactory;
 use Vanthao03596\LaravelPackageTools\Package;
 use Vanthao03596\LaravelPackageTools\PackageServiceProvider;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class LaravelCursorPaginateServiceProvider extends PackageServiceProvider
 {
@@ -26,7 +26,7 @@ class LaravelCursorPaginateServiceProvider extends PackageServiceProvider
         EloquentBuilder::mixin(new EloquentCursorPaginateMixin());
     }
 
-    public  function bootingPackage()
+    public function bootingPackage()
     {
         CursorPaginator::currentCursorResolver(function ($cursorName = 'cursor') {
             return Cursor::fromEncoded($this->app['request']->input($cursorName));

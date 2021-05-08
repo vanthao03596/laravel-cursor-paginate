@@ -2,11 +2,8 @@
 
 namespace Vanthao03596\LaravelCursorPaginate\Tests;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Schema\Blueprint;
-use Vanthao03596\LaravelCursorPaginate\Cursor;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Vanthao03596\LaravelCursorPaginate\Cursor;
 use Vanthao03596\LaravelCursorPaginate\Tests\Models\TestPost;
 use Vanthao03596\LaravelCursorPaginate\Tests\Models\TestUser;
 
