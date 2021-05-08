@@ -36,8 +36,12 @@ class LaravelCursorPaginateServiceProvider extends PackageServiceProvider
             return $app['request']->query();
         });
 
+    }
+
+    public function registeringPackage()
+    {
         $this->app->singleton('db.factory', function ($app) {
             return new ConnectionFactory($app);
-        });
+        });        
     }
 }
