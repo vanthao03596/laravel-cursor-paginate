@@ -3,9 +3,9 @@
 namespace Vanthao03596\LaravelCursorPaginate\Tests;
 
 use Illuminate\Database\Eloquent\Collection;
-use Vanthao03596\LaravelCursorPaginate\AbstractCursorPaginator;
 use Mockery as m;
 use PHPUnit\Framework\TestCase;
+use Vanthao03596\LaravelCursorPaginate\AbstractCursorPaginator;
 
 class CursorPaginatorLoadMorphTest extends TestCase
 {
@@ -19,8 +19,7 @@ class CursorPaginatorLoadMorphTest extends TestCase
         $items = m::mock(Collection::class);
         $items->shouldReceive('loadMorph')->once()->with('parentable', $relations);
 
-        $p = (new class extends AbstractCursorPaginator
-        {
+        $p = (new class extends AbstractCursorPaginator {
             //
         })->setCollection($items);
 
