@@ -1,4 +1,4 @@
-# This is my package LaravelCursorPaginate
+# Laravel Cursor Paginate for laravel 6,7
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/vanthao03596/laravel-cursor-paginate.svg?style=flat-square)](https://packagist.org/packages/vanthao03596/laravel-cursor-paginate)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/vanthao03596/laravel-cursor-paginate/run-tests?label=tests)](https://github.com/vanthao03596/laravel-cursor-paginate/actions?query=workflow%3Arun-tests+branch%3Amaster)
@@ -35,8 +35,7 @@ return [
 ## Usage
 
 ```php
-$laravel-cursor-paginate = new Vanthao03596\LaravelCursorPaginate();
-echo $laravel-cursor-paginate->echoPhrase('Hello, Spatie!');
+
 ```
 
 ## Testing
