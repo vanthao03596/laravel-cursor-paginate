@@ -13,13 +13,6 @@ You can install the package via composer:
 composer require vanthao03596/laravel-cursor-paginate
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --provider="Vanthao03596\LaravelCursorPaginate\LaravelCursorPaginateServiceProvider" --tag="laravel-cursor-paginate-migrations"
-php artisan migrate
-```
-
 You can publish the config file with:
 ```bash
 php artisan vendor:publish --provider="Vanthao03596\LaravelCursorPaginate\LaravelCursorPaginateServiceProvider" --tag="laravel-cursor-paginate-config"
