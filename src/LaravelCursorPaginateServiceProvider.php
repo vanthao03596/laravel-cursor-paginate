@@ -35,13 +35,12 @@ class LaravelCursorPaginateServiceProvider extends PackageServiceProvider
         CursorPaginator::queryStringResolver(function ($app) {
             return $app['request']->query();
         });
-
     }
 
     public function registeringPackage()
     {
         $this->app->singleton('db.factory', function ($app) {
             return new ConnectionFactory($app);
-        });        
+        });
     }
 }
