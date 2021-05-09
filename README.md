@@ -13,18 +13,6 @@ You can install the package via composer:
 composer require vanthao03596/laravel-cursor-paginate
 ```
 
-You can publish the config file with:
-```bash
-php artisan vendor:publish --provider="Vanthao03596\LaravelCursorPaginate\LaravelCursorPaginateServiceProvider" --tag="laravel-cursor-paginate-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
 ## Usage
 
 Similar to `simplePaginate`, `cursorPaginate` displays "Next" and "Previous" links in your application's UI. You may use the `cursorPaginate` method like so:
