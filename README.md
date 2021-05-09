@@ -26,6 +26,21 @@ Similarly, you may use the `cursorPaginate` method to cursor paginate Eloquent m
 $users = User::where('votes', '>', 100)->orderBy('id')->cursorPaginate(15);
 ````
 
+When working with resources, you need to use trait `HasCursorPaginate` to your Resource class:
+
+```php
+
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Vanthao03596\LaravelCursorPaginate\HasCursorPaginate;
+
+class YourCollectionResource extends ResourceCollection
+{
+    use HasCursorPaginate;
+
+    public $collects = YourResource::class;
+}
+````
+
 ## Cursor Paginator Instance Methods
 
 Each cursor paginator instance provides additional pagination information via the following methods:
