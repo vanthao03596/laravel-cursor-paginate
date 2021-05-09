@@ -3,9 +3,9 @@
 namespace Vanthao03596\LaravelCursorPaginate\Tests;
 
 use Illuminate\Support\Facades\Route;
+use Orchestra\Testbench\TestCase;
 use Vanthao03596\LaravelCursorPaginate\Cursor;
 use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
-use Orchestra\Testbench\TestCase;
 use Vanthao03596\LaravelCursorPaginate\Tests\Models\Post;
 use Vanthao03596\LaravelCursorPaginate\Tests\Resources\PostCollectionResource;
 
@@ -16,14 +16,17 @@ class CursorPaginateResourceTest extends TestCase
         Route::get('/', function () {
             $paginator = new CursorPaginator(
                 collect([new Post(['id' => 5, 'title' => 'Test Title']), new Post(['id' => 6, 'title' => 'Hello'])]),
-                1, null, ['parameters' => ['id']]
+                1,
+                null,
+                ['parameters' => ['id']]
             );
 
             return new PostCollectionResource($paginator);
         });
 
         $response = $this->withoutExceptionHandling()->get(
-            '/', ['Accept' => 'application/json']
+            '/',
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(200);
@@ -53,14 +56,18 @@ class CursorPaginateResourceTest extends TestCase
         Route::get('/', function () {
             $collection = collect([new Post(['id' => 5, 'title' => 'Test Title']), new Post(['id' => 6, 'title' => 'Hello'])]);
             $paginator = new CursorPaginator(
-                $collection, 1, null, ['parameters' => ['id']]
+                $collection,
+                1,
+                null,
+                ['parameters' => ['id']]
             );
 
             return PostCollectionResource::make($paginator)->preserveQuery();
         });
 
         $response = $this->withoutExceptionHandling()->get(
-            '/?framework=laravel&author=Otwell', ['Accept' => 'application/json']
+            '/?framework=laravel&author=Otwell',
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(200);
@@ -90,14 +97,18 @@ class CursorPaginateResourceTest extends TestCase
         Route::get('/', function () {
             $collection = collect([new Post(['id' => 5, 'title' => 'Test Title']), new Post(['id' => 6, 'title' => 'Hello'])]);
             $paginator = new CursorPaginator(
-                $collection, 1, null, ['parameters' => ['id']]
+                $collection,
+                1,
+                null,
+                ['parameters' => ['id']]
             );
 
             return PostCollectionResource::make($paginator)->withQuery(['author' => 'Taylor']);
         });
 
         $response = $this->withoutExceptionHandling()->get(
-            '/?framework=laravel&author=Otwell', ['Accept' => 'application/json']
+            '/?framework=laravel&author=Otwell',
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(200);
