@@ -5,7 +5,6 @@ namespace Vanthao03596\LaravelCursorPaginate\Query;
 use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as Base;
 use Illuminate\Pagination\Paginator;
-use Vanthao03596\LaravelCursorPaginate\CursorPaginationException;
 use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
 
 class Builder extends Base
