@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-cursor-paginate` will be documented in this file.
 
+## 1.0.3 - 2021-07-12
+
+- Mixed orders in cursor paginate
+
 ## 1.0.2 - 2021-05-09
 
 - Add support laravel resource
