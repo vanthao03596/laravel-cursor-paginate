@@ -7,49 +7,61 @@ use Illuminate\Pagination\Paginator;
 
 class EloquentCursorPaginateMixin
 {
-    public function cursorPaginate()
+    protected function paginateUsingCursor()
     {
-        return function ($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null) {
+        return function ($perPage, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
+        {
             $cursor = $cursor ?: CursorPaginator::resolveCurrentCursor($cursorName);
-
-            $perPage = $perPage ?: $this->model->getPerPage();
-
+    
             $orders = $this->ensureOrderForCursorPagination(! is_null($cursor) && $cursor->pointsToPreviousItems());
-
-            $orderDirection = $orders->first()['direction'] ?? 'asc';
-
-            $comparisonOperator = $orderDirection === 'asc' ? '>' : '<';
-
-            $parameters = $orders->pluck('column')->toArray();
-
+    
             if (! is_null($cursor)) {
-                if (count($parameters) === 1) {
-                    $this->where($column = $parameters[0], $comparisonOperator, $cursor->parameter($column));
-                } elseif (count($parameters) > 1) {
-                    $this->whereRowValues($parameters, $comparisonOperator, $cursor->parameters($parameters));
-                }
+                $addCursorConditions = function (self $builder, $previousColumn, $i) use (&$addCursorConditions, $cursor, $orders) {
+                    if (! is_null($previousColumn)) {
+                        $builder->where($previousColumn, '=', $cursor->parameter($previousColumn));
+                    }
+    
+                    $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i) {
+                        ['column' => $column, 'direction' => $direction] = $orders[$i];
+    
+                        $builder->where($column, $direction === 'asc' ? '>' : '<', $cursor->parameter($column));
+    
+                        if ($i < $orders->count() - 1) {
+                            $builder->orWhere(function (self $builder) use ($addCursorConditions, $column, $i) {
+                                $addCursorConditions($builder, $column, $i + 1);
+                            });
+                        }
+                    });
+                };
+    
+                $addCursorConditions($this, null, 0);
             }
-
-            $this->take($perPage + 1);
-
+    
+            $this->limit($perPage + 1);
+    
             return $this->cursorPaginator($this->get($columns), $perPage, $cursor, [
                 'path' => Paginator::resolveCurrentPath(),
                 'cursorName' => $cursorName,
-                'parameters' => $parameters,
+                'parameters' => $orders->pluck('column')->toArray(),
             ]);
+        };
+    }
+
+    public function cursorPaginate()
+    {
+        return function ($perPage = null, $columns = ['*'], $cursorName = 'cursor', $cursor = null) {
+            $perPage = $perPage ?: $this->model->getPerPage();
+
+            return $this->paginateUsingCursor($perPage, $columns, $cursorName, $cursor);
         };
     }
 
     protected function ensureOrderForCursorPagination()
     {
         return function ($shouldReverse = false) {
-            $orderDirections = collect($this->query->orders)->pluck('direction')->unique();
+            $orders = collect($this->query->orders);
 
-            if ($orderDirections->count() > 1) {
-                throw new CursorPaginationException('Only a single order by direction is supported when using cursor pagination.');
-            }
-
-            if ($orderDirections->count() === 0) {
+            if ($orders->count() === 0) {
                 $this->enforceOrderBy();
             }
 

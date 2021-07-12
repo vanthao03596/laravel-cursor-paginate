@@ -11,6 +11,52 @@ use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
 class Builder extends Base
 {
     /**
+     * Paginate the given query using a cursor paginator.
+     *
+     * @param  int  $perPage
+     * @param  array  $columns
+     * @param  string  $cursorName
+     * @param  string|null  $cursor
+     * @return \Illuminate\Contracts\Pagination\CursorPaginator
+     */
+    protected function paginateUsingCursor($perPage, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
+    {
+        $cursor = $cursor ?: CursorPaginator::resolveCurrentCursor($cursorName);
+
+        $orders = $this->ensureOrderForCursorPagination(! is_null($cursor) && $cursor->pointsToPreviousItems());
+
+        if (! is_null($cursor)) {
+            $addCursorConditions = function (self $builder, $previousColumn, $i) use (&$addCursorConditions, $cursor, $orders) {
+                if (! is_null($previousColumn)) {
+                    $builder->where($previousColumn, '=', $cursor->parameter($previousColumn));
+                }
+
+                $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i) {
+                    ['column' => $column, 'direction' => $direction] = $orders[$i];
+
+                    $builder->where($column, $direction === 'asc' ? '>' : '<', $cursor->parameter($column));
+
+                    if ($i < $orders->count() - 1) {
+                        $builder->orWhere(function (self $builder) use ($addCursorConditions, $column, $i) {
+                            $addCursorConditions($builder, $column, $i + 1);
+                        });
+                    }
+                });
+            };
+
+            $addCursorConditions($this, null, 0);
+        }
+
+        $this->limit($perPage + 1);
+
+        return $this->cursorPaginator($this->get($columns), $perPage, $cursor, [
+            'path' => Paginator::resolveCurrentPath(),
+            'cursorName' => $cursorName,
+            'parameters' => $orders->pluck('column')->toArray(),
+        ]);
+    }
+
+    /**
      * Get a paginator only supporting simple next and previous links.
      *
      * This is more efficient on larger data-sets, etc.
@@ -24,31 +70,7 @@ class Builder extends Base
      */
     public function cursorPaginate($perPage = 15, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
-        $cursor = $cursor ?: CursorPaginator::resolveCurrentCursor($cursorName);
-
-        $orders = $this->ensureOrderForCursorPagination(! is_null($cursor) && $cursor->pointsToPreviousItems());
-
-        $orderDirection = $orders->first()['direction'] ?? 'asc';
-
-        $comparisonOperator = $orderDirection === 'asc' ? '>' : '<';
-
-        $parameters = $orders->pluck('column')->toArray();
-
-        if (! is_null($cursor)) {
-            if (count($parameters) === 1) {
-                $this->where($column = $parameters[0], $comparisonOperator, $cursor->parameter($column));
-            } elseif (count($parameters) > 1) {
-                $this->whereRowValues($parameters, $comparisonOperator, $cursor->parameters($parameters));
-            }
-        }
-
-        $this->limit($perPage + 1);
-
-        return $this->cursorPaginator($this->get($columns), $perPage, $cursor, [
-            'path' => Paginator::resolveCurrentPath(),
-            'cursorName' => $cursorName,
-            'parameters' => $parameters,
-        ]);
+        return $this->paginateUsingCursor($perPage, $columns, $cursorName, $cursor);
     }
 
     /**
@@ -61,12 +83,6 @@ class Builder extends Base
     protected function ensureOrderForCursorPagination($shouldReverse = false)
     {
         $this->enforceOrderBy();
-
-        $orderDirections = collect($this->orders)->pluck('direction')->unique();
-
-        if ($orderDirections->count() > 1) {
-            throw new CursorPaginationException('Only a single order by direction is supported when using cursor pagination.');
-        }
 
         if ($shouldReverse) {
             $this->orders = collect($this->orders)->map(function ($order) {
