@@ -3,11 +3,11 @@
 namespace Vanthao03596\LaravelCursorPaginate\Query;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as Base;
 use Illuminate\Pagination\Paginator;
-use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
-use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Vanthao03596\LaravelCursorPaginate\Cursor;
+use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
 
 class Builder extends Base
 {

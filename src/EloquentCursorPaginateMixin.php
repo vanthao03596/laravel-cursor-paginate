@@ -3,8 +3,8 @@
 namespace Vanthao03596\LaravelCursorPaginate;
 
 use Illuminate\Container\Container;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\Paginator;
 
 class EloquentCursorPaginateMixin
 {
@@ -99,8 +99,7 @@ class EloquentCursorPaginateMixin
 
     protected function getOriginalColumnNameForCursorPagination()
     {
-        return function($builder, string $parameter)
-        {
+        return function ($builder, string $parameter) {
             $columns = $builder instanceof Builder ? $builder->getQuery()->columns : $builder->columns;
     
             if (! is_null($columns)) {
