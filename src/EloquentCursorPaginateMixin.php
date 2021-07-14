@@ -11,7 +11,11 @@ class EloquentCursorPaginateMixin
     protected function paginateUsingCursor()
     {
         return function ($perPage, $columns = ['*'], $cursorName = 'cursor', $cursor = null) {
-            $cursor = $cursor ?: CursorPaginator::resolveCurrentCursor($cursorName);
+            if (! $cursor instanceof Cursor) {
+                $cursor = is_string($cursor)
+                    ? Cursor::fromEncoded($cursor)
+                    : CursorPaginator::resolveCurrentCursor($cursorName, $cursor);
+            }
     
             $orders = $this->ensureOrderForCursorPagination(! is_null($cursor) && $cursor->pointsToPreviousItems());
     

@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder as Base;
 use Illuminate\Pagination\Paginator;
 use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Vanthao03596\LaravelCursorPaginate\Cursor;
 
 class Builder extends Base
 {
@@ -16,12 +17,16 @@ class Builder extends Base
      * @param  int  $perPage
      * @param  array  $columns
      * @param  string  $cursorName
-     * @param  string|null  $cursor
+     * @param  \Vanthao03596\LaravelCursorPaginate\Cursor|string|null  $cursor
      * @return \Illuminate\Contracts\Pagination\CursorPaginator
      */
     protected function paginateUsingCursor($perPage, $columns = ['*'], $cursorName = 'cursor', $cursor = null)
     {
-        $cursor = $cursor ?: CursorPaginator::resolveCurrentCursor($cursorName);
+        if (! $cursor instanceof Cursor) {
+            $cursor = is_string($cursor)
+                ? Cursor::fromEncoded($cursor)
+                : CursorPaginator::resolveCurrentCursor($cursorName, $cursor);
+        }
 
         $orders = $this->ensureOrderForCursorPagination(! is_null($cursor) && $cursor->pointsToPreviousItems());
 
@@ -68,7 +73,7 @@ class Builder extends Base
      * @param  int|null  $perPage
      * @param  array  $columns
      * @param  string  $cursorName
-     * @param  string|null  $cursor
+     * @param  \Vanthao03596\LaravelCursorPaginate\Cursor|string|null  $cursor
      * @return \Illuminate\Contracts\Pagination\Paginator
      * @throws \Vanthao03596\LaravelCursorPaginate\CursorPaginationException
      */
