@@ -6,6 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Query\Builder as Base;
 use Illuminate\Pagination\Paginator;
 use Vanthao03596\LaravelCursorPaginate\CursorPaginator;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class Builder extends Base
 {
@@ -33,7 +34,11 @@ class Builder extends Base
                 $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i) {
                     ['column' => $column, 'direction' => $direction] = $orders[$i];
 
-                    $builder->where($column, $direction === 'asc' ? '>' : '<', $cursor->parameter($column));
+                    $builder->where(
+                        $this->getOriginalColumnNameForCursorPagination($this, $column),
+                        $direction === 'asc' ? '>' : '<',
+                        $cursor->parameter($column)
+                    );
 
                     if ($i < $orders->count() - 1) {
                         $builder->orWhere(function (self $builder) use ($addCursorConditions, $column, $i) {
@@ -111,5 +116,24 @@ class Builder extends Base
             'cursor',
             'options'
         ));
+    }
+
+    protected function getOriginalColumnNameForCursorPagination($builder, string $parameter)
+    {
+        $columns = $builder instanceof EloquentBuilder ? $builder->getQuery()->columns : $builder->columns;
+
+        if (! is_null($columns)) {
+            foreach ($columns as $column) {
+                if (stripos($column, ' as ') !== false) {
+                    [$original, $alias] = explode(' as ', $column);
+
+                    if ($parameter === $alias) {
+                        return $original;
+                    }
+                }
+            }
+        }
+
+        return $parameter;
     }
 }

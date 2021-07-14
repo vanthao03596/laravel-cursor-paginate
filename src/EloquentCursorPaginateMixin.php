@@ -4,6 +4,7 @@ namespace Vanthao03596\LaravelCursorPaginate;
 
 use Illuminate\Container\Container;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class EloquentCursorPaginateMixin
 {
@@ -23,7 +24,11 @@ class EloquentCursorPaginateMixin
                     $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i) {
                         ['column' => $column, 'direction' => $direction] = $orders[$i];
     
-                        $builder->where($column, $direction === 'asc' ? '>' : '<', $cursor->parameter($column));
+                        $builder->where(
+                            $this->getOriginalColumnNameForCursorPagination($this, $column),
+                            $direction === 'asc' ? '>' : '<',
+                            $cursor->parameter($column)
+                        );
     
                         if ($i < $orders->count() - 1) {
                             $builder->orWhere(function (self $builder) use ($addCursorConditions, $column, $i) {
@@ -85,6 +90,28 @@ class EloquentCursorPaginateMixin
                 'cursor',
                 'options'
             ));
+        };
+    }
+
+    protected function getOriginalColumnNameForCursorPagination()
+    {
+        return function($builder, string $parameter)
+        {
+            $columns = $builder instanceof Builder ? $builder->getQuery()->columns : $builder->columns;
+    
+            if (! is_null($columns)) {
+                foreach ($columns as $column) {
+                    if (stripos($column, ' as ') !== false) {
+                        [$original, $alias] = explode(' as ', $column);
+    
+                        if ($parameter === $alias) {
+                            return $original;
+                        }
+                    }
+                }
+            }
+    
+            return $parameter;
         };
     }
 }

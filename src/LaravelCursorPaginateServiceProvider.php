@@ -3,6 +3,7 @@
 namespace Vanthao03596\LaravelCursorPaginate;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Vanthao03596\LaravelCursorPaginate\Connectors\ConnectionFactory;
 use Vanthao03596\LaravelPackageTools\Package;
 use Vanthao03596\LaravelPackageTools\PackageServiceProvider;
@@ -24,6 +25,7 @@ class LaravelCursorPaginateServiceProvider extends PackageServiceProvider
     public function packageBooted()
     {
         EloquentBuilder::mixin(new EloquentCursorPaginateMixin());
+        BelongsToMany::mixin(new BelongsToManyCursorPaginateMixin());
     }
 
     public function bootingPackage()

@@ -247,7 +247,7 @@ class DatabaseQueryBuilderTest extends TestCase
     }
 
     /**
-     * @return m\MockInterface|Builder
+     * @return \Mockery\MockInterface|\Illuminate\Database\Query\Builder
      */
     protected function getMockQueryBuilder()
     {
