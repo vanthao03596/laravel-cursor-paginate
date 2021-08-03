@@ -22,7 +22,11 @@ class EloquentCursorPaginateMixin
             if (! is_null($cursor)) {
                 $addCursorConditions = function (self $builder, $previousColumn, $i) use (&$addCursorConditions, $cursor, $orders) {
                     if (! is_null($previousColumn)) {
-                        $builder->where($previousColumn, '=', $cursor->parameter($previousColumn));
+                        $builder->where(
+                            $this->getOriginalColumnNameForCursorPagination($this, $previousColumn),
+                            '=',
+                            $cursor->parameter($previousColumn)
+                        );
                     }
     
                     $builder->where(function (self $builder) use ($addCursorConditions, $cursor, $orders, $i) {
