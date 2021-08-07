@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-cursor-paginate` will be documented in this file.
 
+## 1.0.6 - 2021-07-19
+
+- Fix aliasing with cursor pagination
+- Fix previous column for cursor pagination
+
 ## 1.0.5 - 2021-07-19
 
 - Fix issue with cursor pagination and Json resources
